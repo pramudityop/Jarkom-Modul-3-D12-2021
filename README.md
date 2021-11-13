@@ -388,7 +388,80 @@ Kemudian menjalankan command `service squid restart`.
 Cara mengeceknya dengan command `lynx google.com` pada client Loguetown.
 
 ## SOAL 12
+Luffy dan Zoro akhirnya memutuskan untuk berlayar untuk **mencari harta karun di super.franky.yyy.com.** Tugas pencarian dibagi menjadi dua misi, Luffy bertugas untuk **mendapatkan gambar (.png, .jpg),** sedangkan Zoro **mendapatkan sisanya.** Karena Luffy orangnya sangat teliti untuk mencari harta karun, ketika ia berhasil mendapatkan gambar, ia mendapatkan gambar dan melihatnya dengan kecepatan **10 kbps.**
+
+### Solusi:
+
+Pada Water7, menjalankan command `vi /etc/squid/acl-bandwidth.conf` untuk membuat file `acl-bandwidth.conf` dan menambahkan script berikut
+
+```
+acl download url_regex -i .jpg$ .png$
+
+auth_param basic program /usr/lib/squid/basic_ncsa_auth /etc/squid/passwd
+
+acl luffy proxy_auth luffybelikapald12
+acl zoro proxy_auth zorobelikapald12
+
+delay_pools 2
+
+delay_class 1 1
+delay_parameters 1 1250/1250
+delay_access 1 allow luffy
+delay_access 1 deny zoro
+delay_access 1 allow download
+delay_access 1 deny all
+```
+
+![12_1](./11_13/12_1.jpg)
+
+Lalu menambahkan konfigursi berikut pada file `/etc/squid/squid.conf`
+```
+    include /etc/squid/acl-bandwidth.conf
+```
+
+![12_2](./11_13/12_2.jpg)
+
+Setelah itu menjalankan command `service squid restart`.
+
+Untuk mengeceknya menggunakan command `lynx google.com` dan akan diarahkan ke super.franky.d12.com kemudian ke folder public lalu images dan mencoba mendownload file dengan ekstensi .jpg atau .png.
+
 ## SOAL 13
+
+Sedangkan, Zoro yang sangat bersemangat untuk mencari harta karun, sehingga kecepatan kapal Zoro tidak dibatasi ketika sudah mendapatkan harta yang diinginkannya.
+
+### Solusi:
+
+Pada Water7 mengedit file `acl-bandwidth.conf` dengan command `vi /etc/squid/acl-bandwidth.conf` menjadi
+```
+acl download url_regex -i .jpg$ .png$
+
+auth_param basic program /usr/lib/squid/basic_ncsa_auth /etc/squid/passwd
+
+acl luffy proxy_auth luffybelikapald12
+acl zoro proxy_auth zorobelikapald12
+
+delay_pools 2
+
+delay_class 1 1
+delay_parameters 1 1250/1250
+delay_access 1 allow luffy
+delay_access 1 deny zoro
+delay_access 1 allow download
+delay_access 1 deny all
+
+delay_class 2 1
+delay_parameters 2 -1/-1
+delay_access 2 allow zoro
+delay_access 2 deny luffy
+delay_access 2 deny all
+```
+
+![13_1](./11_13/13_1.jpg)
+
+Setelah itu, menjalankan command `service squid restart`.
+
+Untuk mengeceknya menggunakan command `lynx google.com` dan akan diarahkan ke super.franky.d12.com kemudian ke folder public lalu images dan mencoba mendownload file dengan ekstensi .jpg atau .png.
+
 
 ## Kendala Selama Pengerjaan
 
