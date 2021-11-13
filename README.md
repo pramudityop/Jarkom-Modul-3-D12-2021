@@ -298,6 +298,98 @@ Melakukan testing dengan menjalankan command `ip a`.
 ![Text Description automatically
 generated](./images/image27.jpg)
 
+## SOAL 8
+## SOAL 9
+## SOAL 10
+## SOAL 11
+Agar transaksi bisa lebih fokus berjalan, maka dilakukan redirect website agar mudah mengingat website transaksi jual beli kapal. Setiap **mengakses google.com, akan diredirect menuju super.franky.yyy.com** dengan website yang sama pada soal shift modul 2. Web server super.franky.yyy.com berada pada node **Skypie**
+### Solusi :
+
+Pertama EniesLobby, mengedit file pada /etc/bind/named.conf.local dengan command `vi /etc/bind/named.conf.local` dan menambahkan
+
+```
+    zone "super.franky.d12.com" {
+        type master;
+        file "/etc/bind/sunnygo/super.franky.d12.com";
+    };
+```
+
+![11_1](./11_13/11_1.jpg)
+
+Selanjutnya membuat folder sunnygo dengan command `mkdir /etc/bind/sunnygo`. Setelah itu, men-copy file dengan command `cp /etc/bind/db.local /etc/bind/sunnygo/super.franky.d12.com`. Kemudian menambahkan konfigurasi dengan command `vi /etc/bind/sunnygo/super.franky.d12.com`
+```
+$TTL    604800
+@       IN      SOA     super.franky.d12.com. root.super.franky.d12.com. (
+                                 2			; Serial
+                            604800		; Refresh
+                            86400		; Retry
+                            2419200		; Expire
+                            604800 )		; Negative Cache TTL
+;
+@       IN      NS      super.franky.d12.com.
+@       IN      A       10.27.3.69		; IP Skypie
+www     IN      CNAME   super.franky.d12.com.
+@       IN      AAAA    ::1
+```
+![11_2](./11_13/11_2.jpg)
+
+Kemudian menjalankan command `service bind9 restart`
+
+Pada Skypie menginstal apache2, php, libapache2-mod-php7.0. Untuk command instalasinya dapat disimpan di dalam script.sh.
+
+Langkah selanjutnya yaitu mendownload file yang diperlukan dengan command `wget https://raw.githubusercontent.com/FeinardSlim/Praktikum-Modul-2-Jarkom/main/super.franky.zip`.
+
+Selanjutnya file di-extract menggunakan command `unzip super.franky.zip`.
+
+Lalu berpindah ke direktori /etc/apache2/sites-available kemudian mengcopy file 000-default.conf menjadi super.franky.d12.com.conf dengan command `cp 000-default.conf super.franky.d12.com.conf`.
+
+Mengedit file super.franky.d12.com.conf dengan command `vi super.franky.d12.com.conf` dan mengubahnya menjadi
+
+```
+ServerAdmin webmaster@localhost
+DocumentRoot /var/www/super.franky.d12.com
+Servername super.franky.d12.com
+ServerAlias www.super.franky.d12.com
+```
+![11_3](./11_13/11_3.jpg)
+
+Kemudian membuat directory baru dengan nama super.franky.d12.com pada /var/www/ menggunakan command `mkdir /var/www/super.franky.d12.com`. Lalu mengcopy isi dari folder franky yang telah didownload ke /var/www/super.franky.d12.com dengan command `cp -r /root/super.franky/* /var/www/super.franky.d12.com`
+
+Setelah itu menjalankan `command a2ensite super.franky.d12.com` dan `service apache2 restart`
+
+Pada Water7, mengedit file dengan command `vi /etc/squid/squid.conf` menjadi
+```
+include /etc/squid/acl.conf
+http_port 5000
+visible_hostname jualbelikapal.d12.com
+auth_param basic program /usr/lib/squid/basic_ncsa_auth /etc/squid/passwd
+auth_param basic children 5
+auth_param basic realm Proxy
+auth_param basic credentialsttl 2 hours
+auth_param basic casesensitive on
+acl USERS proxy_auth REQUIRED
+acl google dstdomain google.com
+http_access deny google
+deny_info http://super.franky.d12.com/ google
+http_access allow USERS AVAILABLE_WORKING
+http_access deny all
+```
+![11_4](./11_13/11_4.jpg)
+
+Kemudian mengedit file `/etc/resolv.conf` dan mengganti nameserver menjadi
+```
+    Nameserver 10.27.2.2	; IP EniesLobby
+```
+
+![11_5](./11_13/11_5.jpg)
+
+Kemudian menjalankan command `service squid restart`.
+
+Cara mengeceknya dengan command `lynx google.com` pada client Loguetown.
+
+## SOAL 12
+## SOAL 13
+
 ## Kendala Selama Pengerjaan
 
 Adapun beberapa kendala yang kami alami selama pengerjaan soal yaitu sebagai berikut:
