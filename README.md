@@ -336,7 +336,7 @@ Agar transaksi jual beli lebih aman dan pengguna website ada dua orang, proxy di
 ### Solusi:
 Pada Water7, menjalankan `apt-get update` dan `apt-get install apache2-utils`.
 
-Kemudian menjalankan command `htpasswd -cm /etc/squid/passwd luffybelikapald12`, option `c` digunakan untuk membuat file baru, sedangkan `m` digunakan supaya enkripsinya menggunakan MD5. Setelah itu memasukkan password `luffy_d12`.
+Kemudian menjalankan command `htpasswd -cm /etc/squid/passwd luffybelikapald12`, option `-c` digunakan untuk membuat file baru, sedangkan `-m` digunakan supaya enkripsinya menggunakan MD5. Setelah itu memasukkan password `luffy_d12`.
 Kemudian menjalankan command `htpasswd -m /etc/squid/passwd zorobelikapald12`. Setelah itu masukkan password `zoro_d12`.
 
 ![](./images/9_1.jpg)
@@ -369,9 +369,9 @@ Transaksi jual beli tidak dilakukan setiap hari, oleh karena itu akses internet 
 Pada Water7 menambahkan script berikut pada file /etc/squid/acl.conf dengan command `vi /etc/squid/acl.conf`
 
 ```
-    acl AVAILABLE_WORKING time MTWH 07:00-11:00
-    acl AVAILABLE_WORKING time TWHF 17:00-23:59
-    acl AVAILABLE_WORKING time WHFA 00:00-03:00
+acl AVAILABLE_WORKING time MTWH 07:00-11:00
+acl AVAILABLE_WORKING time TWHF 17:00-23:59
+acl AVAILABLE_WORKING time WHFA 00:00-03:00
 ```
 
 ![](./images/10_1.jpg)
@@ -405,30 +405,30 @@ Agar transaksi bisa lebih fokus berjalan, maka dilakukan redirect website agar m
 Pertama EniesLobby, mengedit file pada /etc/bind/named.conf.local dengan command `vi /etc/bind/named.conf.local` dan menambahkan
 
 ```
-    zone "super.franky.d12.com" {
-        type master;
-        file "/etc/bind/sunnygo/super.franky.d12.com";
-    };
+zone "super.franky.d12.com" {
+    type master;
+    file "/etc/bind/sunnygo/super.franky.d12.com";
+};
 ```
 
-![11_1](./11_13/11_1.jpg)
+![11_1](./images/11_1.jpg)
 
 Selanjutnya membuat folder sunnygo dengan command `mkdir /etc/bind/sunnygo`. Setelah itu, men-copy file dengan command `cp /etc/bind/db.local /etc/bind/sunnygo/super.franky.d12.com`. Kemudian menambahkan konfigurasi dengan command `vi /etc/bind/sunnygo/super.franky.d12.com`
 ```
 $TTL    604800
 @       IN      SOA     super.franky.d12.com. root.super.franky.d12.com. (
                                  2			; Serial
-                            604800		; Refresh
-                            86400		; Retry
-                            2419200		; Expire
+                            604800		    ; Refresh
+                            86400		    ; Retry
+                            2419200		    ; Expire
                             604800 )		; Negative Cache TTL
 ;
 @       IN      NS      super.franky.d12.com.
-@       IN      A       10.27.3.69		; IP Skypie
+@       IN      A       10.27.3.69		    ; IP Skypie
 www     IN      CNAME   super.franky.d12.com.
 @       IN      AAAA    ::1
 ```
-![11_2](./11_13/11_2.jpg)
+![11_2](./images/11_2.jpg)
 
 Kemudian menjalankan command `service bind9 restart`
 
@@ -448,7 +448,7 @@ DocumentRoot /var/www/super.franky.d12.com
 Servername super.franky.d12.com
 ServerAlias www.super.franky.d12.com
 ```
-![11_3](./11_13/11_3.jpg)
+![11_3](./images/11_3.jpg)
 
 Kemudian membuat directory baru dengan nama super.franky.d12.com pada /var/www/ menggunakan command `mkdir /var/www/super.franky.d12.com`. Lalu mengcopy isi dari folder franky yang telah didownload ke /var/www/super.franky.d12.com dengan command `cp -r /root/super.franky/* /var/www/super.franky.d12.com`
 
@@ -471,14 +471,14 @@ deny_info http://super.franky.d12.com/ google
 http_access allow USERS AVAILABLE_WORKING
 http_access deny all
 ```
-![11_4](./11_13/11_4.jpg)
+![11_4](./images/11_4.jpg)
 
 Kemudian mengedit file `/etc/resolv.conf` dan mengganti nameserver menjadi
 ```
-    Nameserver 10.27.2.2	; IP EniesLobby
+Nameserver 10.27.2.2	; IP EniesLobby
 ```
 
-![11_5](./11_13/11_5.jpg)
+![11_5](./images/11_5.jpg)
 
 Kemudian menjalankan command `service squid restart`.
 
@@ -509,14 +509,14 @@ delay_access 1 allow download
 delay_access 1 deny all
 ```
 
-![12_1](./11_13/12_1.jpg)
+![12_1](./images/12_1.jpg)
 
 Lalu menambahkan konfigursi berikut pada file `/etc/squid/squid.conf`
 ```
-    include /etc/squid/acl-bandwidth.conf
+include /etc/squid/acl-bandwidth.conf
 ```
 
-![12_2](./11_13/12_2.jpg)
+![12_2](./images/12_2.jpg)
 
 Setelah itu menjalankan command `service squid restart`.
 
@@ -553,7 +553,7 @@ delay_access 2 deny luffy
 delay_access 2 deny all
 ```
 
-![13_1](./11_13/13_1.jpg)
+![13_1](./images/13_1.jpg)
 
 Setelah itu, menjalankan command `service squid restart`.
 
