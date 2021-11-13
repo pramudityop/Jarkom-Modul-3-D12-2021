@@ -11,7 +11,7 @@ Laporan Resmi Praktikum Jaringan Komputer 2021 - D12
 Membuat peta tersebut dengan kriteria EniesLobby sebagai DNS Server,
 Jipangu sebagai DHCP Server, Water7 sebagai Proxy Server.
 
-### Solusi
+### Solusi:
 
 **Membuat Topologi Jaringan**
 
@@ -111,7 +111,7 @@ apt-get install squid
 
 Melakukan setting agar Foosha sebagai DHCP Relay.
 
-### Solusi
+### Solusi:
 
 Langkah pertama yaitu menginstall isc-dhcp-relay pada Foosha dengan
 command
@@ -150,7 +150,7 @@ Semua client yang ada HARUS menggunakan konfigurasi IP dari DHCP Server.
 Client yang melalui Switch1 mendapatkan range IP dari \[prefix IP\].1.20
 - \[prefix IP\].1.99 dan \[prefix IP\].1.150 - \[prefix IP\].1.169
 
-### Solusi
+### Solusi:
 
 Pertama mengedit file /etc/dhcp/dhcpd.conf dengan command \`vi
 /etc/dhcp/dhcpd.conf \` sehingg konfigurasinya sebagai berikut:
@@ -189,7 +189,7 @@ subnet 10.27.2.0 netmask 255.255.255.0
 Client yang melalui Switch3 mendapatkan range IP dari \[prefix IP\].3.30
 - \[prefix IP\].3.50
 
-### Solusi
+### Solusi:
 
 Pertama mengedit file /etc/dhcp/dhcpd.conf dengan command \`vi
 /etc/dhcp/dhcpd.conf \` sehingg konfigurasinya sebagai berikut:
@@ -252,7 +252,7 @@ generated](./images/image17.jpg)
 Client mendapatkan DNS dari EniesLobby dan client dapat terhubung dengan
 internet melalui DNS tersebut.
 
-### Solusi
+### Solusi:
 
 Pertama, melakukan setting agar EniesLobby menjadi DNS Forwarder dengan
 mengedit file /etc/bind/named.conf.options dengan command \`vi
@@ -299,7 +299,7 @@ Switch1 selama 6 menit sedangkan pada client yang melalui Switch3 selama
 12 menit. Dengan waktu maksimal yang dialokasikan untuk peminjaman
 alamat IP selama 120 menit.
 
-### Solusi
+### Solusi:
 
 Pada Jipangu membuka file /etc/dhcp/dhcpd.conf. Pada subnet 1 dengan
 \`default-lease-time 360\` dan \`max-lease-time 7200\`.
@@ -320,7 +320,7 @@ generated](./images/image24.jpg)
 Menjadikan Skypie sebagai server dengan alamat IP yang tetap dengan IP
 \[prefix IP\].3.69
 
-### Solusi
+### Solusi:
 
 Pertama, pada Jipangu membuka file konfigurasi /etc/dhcp/dhcpd.conf dan
 mengeditnya \`vi /etc/dhcp/dhcpd.conf\` dengan menambahkan konfigurasi
