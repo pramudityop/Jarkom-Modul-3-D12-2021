@@ -299,8 +299,105 @@ Melakukan testing dengan menjalankan command `ip a`.
 generated](./images/image27.jpg)
 
 ## SOAL 8
+Pada Loguetown, proxy harus bisa diakses dengan nama jualbelikapal.yyy.com dengan port yang digunakan adalah 5000
+
+### Solusi:
+
+Pertama, pada Water7 melakukan backup file /etc/squid/squid.conf dengan menggunakan command `mv /etc/squid/squid.conf /etc/squid/squid.conf.bak`.
+
+Selanjutnya menambahkan script berikut dengan command `vi /etc/squid/squid.conf `
+
+```
+http_port 5000
+visible_hostname jualbelikapal.d12.com
+http_access allow all
+```
+
+![](./images/8_1.jpg)
+
+Selanjutnya melakukan command `service squid restart`.
+
+Pada client Loguetown, jangan lupa untuk menginstall lynx.
+
+```
+apt-get update
+apt-get install lynx
+```
+
+Setelah terinstall, melakukan konfigurasi proxy servernya dengan command `export http_proxy="http://10.27.2.3:5000"`.
+
+Kemudian untuk mengecek apakah sudah aktif dengan cara command `env | grep -i proxy`.
+
+Untuk mengeceknya dengan command `lynx its.ac.id`. 
+
 ## SOAL 9
+Agar transaksi jual beli lebih aman dan pengguna website ada dua orang, proxy dipasang autentikasi user proxy dengan enkripsi MD5 dengan dua username, yaitu luffybelikapalyyy dengan password luffy_yyy dan zorobelikapalyyy dengan password zoro_yyy
+
+### Solusi:
+Pada Water7, menjalankan `apt-get update` dan `apt-get install apache2-utils`.
+
+Kemudian menjalankan command `htpasswd -cm /etc/squid/passwd luffybelikapald12`, option `c` digunakan untuk membuat file baru, sedangkan `m` digunakan supaya enkripsinya menggunakan MD5. Setelah itu memasukkan password `luffy_d12`.
+Kemudian menjalankan command `htpasswd -m /etc/squid/passwd zorobelikapald12`. Setelah itu masukkan password `zoro_d12`.
+
+![](./images/9_1.jpg)
+
+Setelah itu, mengedit file /etc/squid/squid.conf dengan command `vi /etc/squid/squid.conf` 
+
+```
+http_port 5000
+visible_hostname jualbelikapal.d12.com
+
+auth_param basic program /usr/lib/squid/basic_ncsa_auth /etc/squid/passwd
+auth_param basic children 5
+auth_param basic realm Proxy
+auth_param basic credentialsttl 2 hours
+auth_param basic casesensitive on
+acl USERS proxy_auth REQUIRED
+http_access allow USERS
+```
+
+![](./images/9_2.jpg)
+
+Kemudian menjalankan command `service squid restart`.
+
+Untuk mengeceknya, pada client Loguetown menjalankan command `lynx its.ac.id` yang selanjutnya akan diminta untuk memasukkan username dan password.
+
 ## SOAL 10
+Transaksi jual beli tidak dilakukan setiap hari, oleh karena itu akses internet dibatasi hanya dapat diakses setiap hari Senin-Kamis pukul 07.00-11.00 dan setiap hari Selasa-Jum’at pukul 17.00-03.00 keesokan harinya (sampai Sabtu pukul 03.00)
+
+### Solusi:
+Pada Water7 menambahkan script berikut pada file /etc/squid/acl.conf dengan command `vi /etc/squid/acl.conf`
+
+```
+    acl AVAILABLE_WORKING time MTWH 07:00-11:00
+    acl AVAILABLE_WORKING time TWHF 17:00-23:59
+    acl AVAILABLE_WORKING time WHFA 00:00-03:00
+```
+
+![](./images/10_1.jpg)
+
+Setelah itu mengedit file pada /etc/squid/squid.conf dengan command `vi /etc/squid/squid.conf` menjadi
+
+```
+include /etc/squid/acl.conf
+http_port 5000
+visible_hostname jualbelikapal.d12.com
+auth_param basic program /usr/lib/squid/basic_ncsa_auth /etc/squid/passwd
+auth_param basic children 5
+auth_param basic realm Proxy
+auth_param basic credentialsttl 2 hours
+auth_param basic casesensitive on
+acl USERS proxy_auth REQUIRED
+http_access allow USERS AVAILABLE_WORKING
+http_access deny all 
+```
+
+![](./images/10_2.jpg)
+
+Kemudian menjalankan command `service squid restart`.
+
+Untuk mengeceknya, pada client Loguetown menjalankan command `date` untuk mengetahui tanggal dan waktu saat dijalankan. Selanjutnya menjalankan command `lynx its.ac.id` apabila date sesuai dengan yang diminta soal maka berhasil dibuka dan sebaliknya.
+
 ## SOAL 11
 Agar transaksi bisa lebih fokus berjalan, maka dilakukan redirect website agar mudah mengingat website transaksi jual beli kapal. Setiap **mengakses google.com, akan diredirect menuju super.franky.yyy.com** dengan website yang sama pada soal shift modul 2. Web server super.franky.yyy.com berada pada node **Skypie**
 ### Solusi :
